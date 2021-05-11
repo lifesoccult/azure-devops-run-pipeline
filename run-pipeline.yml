@@ -1,0 +1,40 @@
+parameters:
+  - name: organization
+    type: string
+  - name: project
+    type: string
+  - name: pipeline_id
+    type: string
+  - name: pipeline_branch
+    type: string
+  - name: pipeline_variables
+    type: string
+  - name: stages_to_skip
+    type: string
+  - name: ado_token
+    type: string
+
+stages:
+  - stage: run_pipeline
+    displayName: Run Pipeline
+    pool:
+      vmImage: 'windows-2019'
+    jobs:
+      - job: powershell_api_call
+        displayName: Call Run Pipeline API
+        steps:
+          - checkout: pipeline-templates
+          - task: PowerShell@2
+            displayName: Run Pipeline ${{ parameters.pipeline_id }}
+            inputs:
+              filePath: powershell/Run-Pipeline.ps1
+              arguments: |
+                -AzureDevOpsPAT $env:ado_token `
+                -Organization $${ parameters.organization }} `
+                -ProjectName ${{ parameters.project  }} `
+                -PipelineId ${{ parameters.pipeline_id }} `
+                -PipelineBranch ${{ parameters.pipeline_branch }} `
+                -PipelineVariables "${{ parameters.pipeline_variables }}" `
+                -StagesToSkip "${{ parameters.stages_to_skip }}"
+            env:
+              ado_token: ${{ parameters.ado_token }}
