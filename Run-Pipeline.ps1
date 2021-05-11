@@ -1,25 +1,18 @@
 param(
     [Parameter(Mandatory=$true)]
-    [String]
-    $AzureDevOpsPAT,
+    [String]$AzureDevOpsPAT,
     [Parameter(Mandatory=$true)]
-    [String]
-    $Organization,
+    [String]$Organization,
     [Parameter(Mandatory=$true)]
-    [String]
-    $Project,
+    [String]$Project,
     [Parameter(Mandatory=$true)]
-    [Int]
-    $PipelineId,
+    [Int]$PipelineId,
     [Parameter(Mandatory=$false)]
-    [String]
-    $PipelineBranch = 'main',
+    [String]$PipelineBranch = 'main',
     [Parameter(Mandatory=$false)]
-    [String]
-    $PipelineVariables = '{}',
+    [String]$PipelineVariables = '{}',
     [Parameter(Mandatory=$false)]
-    [String]
-    $StagesToSkip = '[]'
+    [String]$StagesToSkip = '[]'
 )
 
 $AzureDevOpsPATSecure = $AzureDevOpsPAT | ConvertTo-SecureString -AsPlainText -Force
