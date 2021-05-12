@@ -14,7 +14,6 @@ param(
     [Parameter(Mandatory=$false)]
     [String]$StagesToSkip = '[]'
 )
-
 $AzureDevOpsPATSecure = $AzureDevOpsPAT | ConvertTo-SecureString -AsPlainText -Force
 $Headers = @{Authorization = 'Basic ' + [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$([Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($AzureDevOpsPATSecure)))"))}
 $Uri = "https://dev.azure.com/$Organization/$Project/_apis/pipelines/$PipelineId/runs?api-version=6.0-preview.1"
@@ -30,7 +29,6 @@ $Body = "{
     'stagesToSkip': $StagesToSkip,
     'variables': $PipelineVariables
 }"
-
 try {
     Write-Host "Starting Pipeline with id $PipelineId on branch $PipelineBranch"
     $Response = Invoke-RestMethod -Uri $Uri -Method POST -Headers $Headers -Body $Body -ContentType "application/json"
@@ -39,4 +37,8 @@ try {
     Write-Host "There was an error executing the new pipelne:"
     Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__
     Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+    $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+    $reader.BaseStream.Position = 0
+    $reader.DiscardBufferedData()
+    Write-Host "StatusMessage:" ($reader.ReadToEnd() | ConvertFrom-Json).message
 }
