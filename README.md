@@ -1,7 +1,7 @@
 # Azure DevOps Run Pipeline Template
 This is a generic template that can be used to invoke the execution of a pipeline from another pipeline. 
 You will need to provide your own [Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate)
-in order to authenticate to the API.
+in order to authenticate to the API. It is best to store this as a secret variable in a [Library Variable Group](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml).
 
 ## Usage
 This template is designed to operate at the root level of an Azure Pipeline. It has its own `stages` declaration.
@@ -38,7 +38,7 @@ Here is an example of the template declaration fully populated
     pipeline_branch: develop
     pipeline_variables: "{'environment': {'value': 'dev'}, 'var1': {'value': 'foo'}, 'var2': {'value': 'bar'}}"
     stages_to_skip: "['deploy']"
-    ado_token: yf4ox2winbykix2fwzovvm3r3ybgzl6pieesk6qwkvujjh6zyfwz
+    ado_token: $(ado_token)
 ```
 ## A Note on Pipeline Variables
 There is a specific format for this argument based on the [API documentation](https://docs.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/run%20pipeline?view=azure-devops-rest-6.0).
